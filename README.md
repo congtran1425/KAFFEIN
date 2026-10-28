@@ -4,6 +4,16 @@ Hệ thống bán hàng và quản lý nguyên liệu cho một chuỗi cà phê
 
 POS đọc dữ liệu từ Room, lưu thao tác vào outbox và đồng bộ với máy chủ bằng mã thao tác ổn định. Bán tiền mặt có thể hoàn tất khi mất mạng nếu dữ liệu và phiên làm việc đã sẵn sàng. Thanh toán QR ZaloPay/MoMo cần xác nhận trực tuyến từ máy chủ. Hóa đơn đã thanh toán được giữ nguyên; hoàn tiền không thuộc phạm vi triển khai.
 
+## Video Demo Hệ thống
+
+Video quay lại kịch bản vận hành thực tế của hệ thống KAFFEIN (thời lượng ~22 phút):
+- **Web Admin:** Quản lý danh mục thực đơn, nguyên vật liệu kho, nhân sự, ca làm và báo cáo số liệu toàn chuỗi.
+- **Android POS:** Quy trình bán hàng tại quầy (mở ca/phiên quỹ, tạo order, thanh toán tiền mặt offline, thanh toán trực tuyến qua mã QR MoMo/ZaloPay Sandbox và kết ca quỹ).
+- **Khả năng chịu lỗi & đồng bộ:** Đồng bộ ngoại tuyến (Room Outbox) và kiểm thử khả năng tự phục hồi khi có kết nối trở lại.
+
+> - **Tập tin video nội bộ:** [kaffein-system-demo.mp4](thesis/kaffein-system-demo.mp4) *(thời lượng `22:24`, MP4)*
+> - **Thư mục tư liệu & video trực tuyến:** [Google Drive](https://drive.google.com/drive/folders/1wdwwHIi8vouFsOt2kym_0qYmnL6fI6R4?usp=drive_link)
+
 ## Thành phần
 
 | Thư mục | Nội dung |

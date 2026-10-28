@@ -14,6 +14,7 @@ apps/pos/.kotlin/
 apps/pos/app/release/
 *.apk
 *.aab
+*.mp4
 .gradle/
 .idea/
 .vscode/

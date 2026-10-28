@@ -2,6 +2,7 @@
 
 - [Báo cáo PDF](31231027506_TranChiCong_DATN.pdf).
 - [Nguồn Typst](31231027506_TranChiCong_DATN.typst).
+- [Video demo hệ thống](kaffein-system-demo.mp4) (MP4, thời lượng 22:24).
 - [Tài liệu tham khảo](references/bibliography.bib).
 - [Bằng chứng kiểm thử và triển khai](assets/evidence/README.md).
 - [Tài liệu kỹ thuật được dẫn trong báo cáo](../docs/README.md).
