@@ -6,6 +6,8 @@ POS đọc dữ liệu từ Room, lưu thao tác vào outbox và đồng bộ v�
 
 ## Video Demo Hệ thống
 
+https://github.com/user-attachments/assets/c371b05e-12b4-4526-bce0-0647f7449965
+
 <p align="center">
   <a href="https://drive.google.com/drive/folders/1wdwwHIi8vouFsOt2kym_0qYmnL6fI6R4?usp=drive_link" target="_blank">
     <img src="thesis/assets/kaffein-demo-preview.gif" alt="KAFFEIN System Demo Preview" width="720px" />
