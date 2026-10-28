@@ -16,6 +16,7 @@ apps/pos/app/release/
 *.aab
 *.mp4
 !thesis/kaffein-system-demo-compressed.mp4
+!thesis/kaffein-demo-highlight.mp4
 .gradle/
 .idea/
 .vscode/
