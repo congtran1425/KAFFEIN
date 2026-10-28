@@ -1,0 +1,81 @@
+name: kaffein
+
+x-api-build: &api-build
+  context: .
+  dockerfile: apps/api/Dockerfile
+
+services:
+  db:
+    image: postgres:17-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:?required}
+      POSTGRES_USER: ${POSTGRES_USER:?required}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?required}
+      TZ: UTC
+    volumes:
+      - db_data:/var/lib/postgresql/data
+    networks: [backend]
+    mem_limit: 768m
+    cpus: 0.5
+    security_opt: [no-new-privileges:true]
+    healthcheck:
+      test: [CMD-SHELL, 'pg_isready -U "$$POSTGRES_USER" -d "$$POSTGRES_DB"']
+      interval: 10s
+      timeout: 5s
+      retries: 10
+    logging: &logging
+      driver: json-file
+      options:
+        max-size: 10m
+        max-file: '3'
+
+  api:
+    build:
+      <<: *api-build
+      target: runner
+    image: kaffein-api:${KAFFEIN_RELEASE:-desktop-work}
+    restart: unless-stopped
+    env_file: [/opt/apps/kaffein/config/.env.vps]
+    environment:
+      NODE_ENV: production
+      TZ: UTC
+      PORT: 3000
+    ports: ['127.0.0.1:3082:3000']
+    networks: [backend]
+    depends_on:
+      db:
+        condition: service_healthy
+    mem_limit: 768m
+    cpus: 1.0
+    security_opt: [no-new-privileges:true]
+    healthcheck:
+      test: [CMD, wget, -q, --spider, 'http://127.0.0.1:3000/health']
+      interval: 15s
+      timeout: 5s
+      start_period: 30s
+      retries: 5
+    logging: *logging
+
+  tooling:
+    profiles: [tools]
+    build:
+      <<: *api-build
+      target: tooling
+    image: kaffein-tools:${KAFFEIN_RELEASE:-desktop-work}
+    env_file: [/opt/apps/kaffein/config/.env.vps]
+    networks: [backend]
+    depends_on:
+      db:
+        condition: service_healthy
+    mem_limit: 768m
+    cpus: 1.0
+    security_opt: [no-new-privileges:true]
+    command: [npm, run, db:status]
+    logging: *logging
+
+networks:
+  backend:
+
+volumes:
+  db_data:

@@ -1,0 +1,30 @@
+{
+  "name": "kaffein",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Multi-branch offline-capable POS and ingredient inventory system for a coffee shop chain.",
+  "workspaces": [
+    "apps/api",
+    "apps/web",
+    "packages/*",
+    "infra"
+  ],
+  "scripts": {
+    "dev:api": "npm run start:dev --workspace api",
+    "dev:web": "npm run dev --workspace web",
+    "build": "npm run build --workspaces --if-present",
+    "lint": "npm run lint --workspaces --if-present",
+    "test": "npm run test --workspaces --if-present",
+    "sandbox:up": "docker compose up -d",
+    "sandbox:down": "docker compose down",
+    "sandbox:logs": "docker compose logs -f postgres"
+  },
+  "engines": {
+    "node": ">=24"
+  },
+  "overrides": {
+    "@nestjs/platform-express": {
+      "multer": "2.4.0"
+    }
+  }
+}

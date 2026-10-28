@@ -1,0 +1,30 @@
+# Only API build inputs may enter the image, including when local .env or
+# database backups are tracked in a private checkout.
+**
+!package.json
+!package-lock.json
+!apps/
+!apps/api/
+!apps/api/package.json
+!apps/api/container-bootstrap.cjs
+!apps/api/prisma.config.ts
+!apps/api/tsconfig*.json
+!apps/api/nest-cli.json
+!apps/api/prisma/
+!apps/api/prisma/**
+!apps/api/src/
+!apps/api/src/**
+!apps/web/
+!apps/web/package.json
+!packages/
+!packages/contracts/
+!packages/contracts/package.json
+!infra/
+!infra/package.json
+apps/api/src/generated/
+**/*.spec.ts
+**/.env*
+**/*.db
+**/*.dump
+**/*.pem
+**/*.key

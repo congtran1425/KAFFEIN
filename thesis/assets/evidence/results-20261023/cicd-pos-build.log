@@ -1,0 +1,102 @@
+Project-local AWS, OCI SSH and Android settings are active in this PowerShell session.
+Usage: dot-source this script with . .\scripts\Use-ProjectEnvironment.ps1
+
+<PROJECT_ROOT>\apps\pos>if "Windows_NT" == "Windows_NT" setlocal
+
+<PROJECT_ROOT>\apps\pos>set DIRNAME=<PROJECT_ROOT>\apps\pos\ 
+
+<PROJECT_ROOT>\apps\pos>if "<PROJECT_ROOT>\apps\pos\" == "" set DIRNAME=. 
+
+<PROJECT_ROOT>\apps\pos>set APP_BASE_NAME=gradlew 
+
+<PROJECT_ROOT>\apps\pos>set APP_HOME=<PROJECT_ROOT>\apps\pos\ 
+
+<PROJECT_ROOT>\apps\pos>for %i in ("<PROJECT_ROOT>\apps\pos\") do set APP_HOME=%~fi 
+
+<PROJECT_ROOT>\apps\pos>set APP_HOME=<PROJECT_ROOT>\apps\pos\ 
+
+<PROJECT_ROOT>\apps\pos>set DEFAULT_JVM_OPTS="-Xmx64m" "-Xms64m" 
+
+<PROJECT_ROOT>\apps\pos>if defined JAVA_HOME goto findJavaFromJavaHome 
+
+<PROJECT_ROOT>\apps\pos>set JAVA_HOME=<USER_HOME>\.gradle\jdks\eclipse_adoptium-21-amd64-windows.2 
+
+<PROJECT_ROOT>\apps\pos>set JAVA_EXE=<USER_HOME>\.gradle\jdks\eclipse_adoptium-21-amd64-windows.2/bin/java.exe 
+
+<PROJECT_ROOT>\apps\pos>if exist "<USER_HOME>\.gradle\jdks\eclipse_adoptium-21-amd64-windows.2/bin/java.exe" goto execute 
+
+<PROJECT_ROOT>\apps\pos>set CLASSPATH= 
+
+<PROJECT_ROOT>\apps\pos>"<USER_HOME>\.gradle\jdks\eclipse_adoptium-21-amd64-windows.2/bin/java.exe" "-Xmx64m" "-Xms64m"   "-Dorg.gradle.appname=gradlew" -classpath "" -jar "<PROJECT_ROOT>\apps\pos\\gradle\wrapper\gradle-wrapper.jar" :app:testDebugUnitTest :app:assembleDebug --no-daemon 
+To honour the JVM settings for this build a single-use Daemon process will be forked. For more on this, please refer to https://docs.gradle.org/9.5.0/userguide/gradle_daemon.html#sec:disabling_the_daemon in the Gradle documentation.
+Daemon will be stopped at the end of the build 
+Calculating task graph as no cached configuration is available for tasks: :app:testDebugUnitTest :app:assembleDebug
+> Task :app:generateDebugAssets UP-TO-DATE
+> Task :app:preBuild UP-TO-DATE
+> Task :app:preDebugBuild UP-TO-DATE
+> Task :app:preDebugUnitTestBuild UP-TO-DATE
+> Task :app:mergeDebugNativeDebugMetadata NO-SOURCE
+> Task :app:writeDebugAppMetadata UP-TO-DATE
+> Task :app:generateDebugResources UP-TO-DATE
+> Task :app:generateDebugGlobalSynthetics UP-TO-DATE
+> Task :app:mapDebugSourceSetPaths UP-TO-DATE
+> Task :app:validateSigningDebug UP-TO-DATE
+> Task :app:desugarDebugFileDependencies UP-TO-DATE
+> Task :app:javaPreCompileDebug UP-TO-DATE
+> Task :app:javaPreCompileDebugUnitTest UP-TO-DATE
+> Task :app:mergeDebugJniLibFolders UP-TO-DATE
+> Task :app:writeDebugSigningConfigVersions UP-TO-DATE
+> Task :app:packageDebugResources UP-TO-DATE
+> Task :app:createDebugCompatibleScreenManifests
+> Task :app:extractDeepLinksDebug
+> Task :app:generateDebugBuildConfig
+> Task :app:checkDebugDuplicateClasses UP-TO-DATE
+> Task :app:mergeDebugAssets UP-TO-DATE
+> Task :app:mergeLibDexDebug UP-TO-DATE
+> Task :app:checkDebugAarMetadata UP-TO-DATE
+> Task :app:compressDebugAssets UP-TO-DATE
+> Task :app:processDebugNavigationResources
+> Task :app:mergeDebugResources UP-TO-DATE
+> Task :app:mergeDebugNativeLibs UP-TO-DATE
+> Task :app:compileDebugNavigationResources UP-TO-DATE
+> Task :app:stripDebugDebugSymbols UP-TO-DATE
+> Task :app:parseDebugLocalResources UP-TO-DATE
+> Task :app:generateDebugRFile UP-TO-DATE
+> Task :app:mergeExtDexDebug UP-TO-DATE
+> Task :app:kspDebugKotlin UP-TO-DATE
+> Task :app:processDebugMainManifest
+> Task :app:processDebugManifest
+> Task :app:processDebugManifestForPackage
+> Task :app:processDebugResources
+
+> Task :app:compileDebugKotlin
+w: file:///<PROJECT_ROOT>/apps/pos/app/src/main/java/vn/id/congtc145/coffeepos/MainActivity.kt:225:58 'static field FLAG_FULLSCREEN: Int' is deprecated. Deprecated in Java.
+w: file:///<PROJECT_ROOT>/apps/pos/app/src/main/java/vn/id/congtc145/coffeepos/MainActivity.kt:226:67 'static field FLAG_FULLSCREEN: Int' is deprecated. Deprecated in Java.
+w: file:///<PROJECT_ROOT>/apps/pos/app/src/main/java/vn/id/congtc145/coffeepos/MainActivity.kt:240:74 'static field FLAG_FULLSCREEN: Int' is deprecated. Deprecated in Java.
+w: file:///<PROJECT_ROOT>/apps/pos/app/src/main/java/vn/id/congtc145/coffeepos/MainActivity.kt:241:61 'static field FLAG_FULLSCREEN: Int' is deprecated. Deprecated in Java.
+w: file:///<PROJECT_ROOT>/apps/pos/app/src/main/java/vn/id/congtc145/coffeepos/MainActivity.kt:259:31 'fun setOnSystemUiVisibilityChangeListener(p0: View.OnSystemUiVisibilityChangeListener!): Unit' is deprecated. Deprecated in Java.
+w: file:///<PROJECT_ROOT>/apps/pos/app/src/main/java/vn/id/congtc145/coffeepos/MainActivity.kt:260:46 'static field SYSTEM_UI_FLAG_HIDE_NAVIGATION: Int' is deprecated. Deprecated in Java.
+
+> Task :app:processDebugJavaRes UP-TO-DATE
+> Task :app:mergeDebugJavaResource UP-TO-DATE
+> Task :app:compileDebugJavaWithJavac
+> Task :app:bundleDebugClassesToCompileJar
+> Task :app:bundleDebugClassesToRuntimeJar
+> Task :app:dexBuilderDebug
+> Task :app:mergeProjectDexDebug
+> Task :app:packageDebug
+> Task :app:assembleDebug
+> Task :app:createDebugApkListingFileRedirect
+> Task :app:kspDebugUnitTestKotlin
+> Task :app:compileDebugUnitTestKotlin
+> Task :app:compileDebugUnitTestJavaWithJavac NO-SOURCE
+> Task :app:processDebugUnitTestJavaRes UP-TO-DATE
+> Task :app:testDebugUnitTest
+
+BUILD SUCCESSFUL in 54s
+46 actionable tasks: 19 executed, 27 up-to-date
+Configuration cache entry stored.
+
+<PROJECT_ROOT>\apps\pos>if 0 EQU 0 goto mainEnd 
+
+<PROJECT_ROOT>\apps\pos>if "Windows_NT" == "Windows_NT" endlocal

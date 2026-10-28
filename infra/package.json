@@ -1,0 +1,25 @@
+{
+  "name": "@kaffein/infra",
+  "version": "0.1.0",
+  "private": true,
+  "description": "AWS CDK infrastructure for KAFFEIN POS.",
+  "scripts": {
+    "build": "tsc",
+    "test": "npm run build && node --test test/*.test.cjs",
+    "watch": "tsc -w",
+    "cdk": "cdk",
+    "synth": "cdk synth",
+    "diff": "cdk diff",
+    "deploy": "cdk deploy"
+  },
+  "devDependencies": {
+    "@types/node": "^22.13.0",
+    "aws-cdk": "^2.180.0",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.7.0"
+  },
+  "dependencies": {
+    "aws-cdk-lib": "^2.180.0",
+    "constructs": "^10.4.2"
+  }
+}

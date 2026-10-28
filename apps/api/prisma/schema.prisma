@@ -1,0 +1,709 @@
+generator client {
+  provider     = "prisma-client"
+  output       = "../src/generated/prisma"
+  moduleFormat = "cjs"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model Store {
+  id               BigInt     @id @default(autoincrement())
+  code             String     @unique @db.Text
+  name             String     @db.Text
+  address          String     @db.Text
+  status           String     @default("ACTIVE") @db.Text
+  businessTimezone String     @default("Asia/Ho_Chi_Minh") @map("business_timezone") @db.Text
+  createdAt        DateTime   @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt        DateTime   @updatedAt @map("updated_at") @db.Timestamptz(3)
+  archivedAt       DateTime?  @map("archived_at") @db.Timestamptz(3)
+
+  homeUsers        User[]                  @relation("HomeStore")
+  transfersFrom    EmployeeStoreTransfer[] @relation("TransferFromStore")
+  transfersTo      EmployeeStoreTransfer[] @relation("TransferToStore")
+  devices          Device[]
+  activationCodes  DeviceActivationCode[]
+  auditLogs        AuditLog[]
+  attendances      AttendanceRecord[]      @relation("StoreAttendance")
+  homeAttendances  AttendanceRecord[]      @relation("HomeStoreAttendance")
+  cashierSessions  CashierSession[]
+  registerSessions RegisterSession[]
+  stockBalances    StockBalance[]
+  stockMovements   StockMovement[]
+  sales            Sale[]
+  payments         Payment[]
+  syncOperations   SyncOperation[]
+  syncChanges      SyncChange[]
+  stockReceipts    StockReceipt[]
+  checkoutRejections CheckoutRejection[]
+
+  @@map("stores")
+}
+
+model ProductCategory {
+  id         BigInt   @id @default(autoincrement())
+  name       String   @unique @db.Text
+  sortOrder  Int      @default(0) @map("sort_order")
+  isActive   Boolean  @default(true) @map("is_active")
+  taxRateBps Int      @default(0) @map("tax_rate_bps")
+  createdAt  DateTime @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt  DateTime @updatedAt @map("updated_at") @db.Timestamptz(3)
+
+  products Product[]
+
+  @@index([isActive, sortOrder])
+  @@map("product_categories")
+}
+
+model Product {
+  id          BigInt   @id @default(autoincrement())
+  categoryId  BigInt   @map("category_id")
+  code        String   @unique @db.Text
+  name        String   @db.Text
+  description String?  @db.Text
+  isActive    Boolean  @default(true) @map("is_active")
+  createdAt   DateTime @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt   DateTime @updatedAt @map("updated_at") @db.Timestamptz(3)
+
+  category        ProductCategory  @relation(fields: [categoryId], references: [id], onDelete: Restrict)
+  variants        ProductVariant[]
+  allowedToppings ProductTopping[]
+  saleItems       SaleItem[]
+
+  @@index([categoryId, isActive])
+  @@map("products")
+}
+
+model ProductVariant {
+  id        BigInt  @id @default(autoincrement())
+  productId BigInt  @map("product_id")
+  code      String  @db.Text
+  sizeLabel String  @map("size_label") @db.Text
+  priceVnd  BigInt  @map("price_vnd")
+  isDefault Boolean @default(false) @map("is_default")
+  isActive  Boolean @default(true) @map("is_active")
+
+  product        Product         @relation(fields: [productId], references: [id], onDelete: Restrict)
+  recipeVersions RecipeVersion[]
+  saleItems      SaleItem[]
+
+  @@unique([productId, code])
+  @@index([productId, isActive])
+  @@map("product_variants")
+}
+
+model Topping {
+  id        BigInt  @id @default(autoincrement())
+  code      String  @unique @db.Text
+  name      String  @db.Text
+  priceVnd  BigInt  @map("price_vnd")
+  isActive  Boolean @default(true) @map("is_active")
+
+  allowedProducts  ProductTopping[]
+  items            ToppingItem[]
+  saleItemToppings SaleItemTopping[]
+
+  @@map("toppings")
+}
+
+model ProductTopping {
+  productId BigInt @map("product_id")
+  toppingId BigInt @map("topping_id")
+
+  product Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+  topping Topping @relation(fields: [toppingId], references: [id], onDelete: Cascade)
+
+  @@id([productId, toppingId])
+  @@index([toppingId])
+  @@map("product_toppings")
+}
+
+model User {
+  id           BigInt    @id @default(autoincrement())
+  employeeCode BigInt    @unique @default(dbgenerated()) @map("employee_code")
+  fullName     String    @map("full_name") @db.Text
+  role         String    @db.Text
+  homeStoreId  BigInt?   @map("home_store_id")
+  status       String    @default("ACTIVE") @db.Text
+  createdAt    DateTime  @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt    DateTime  @updatedAt @map("updated_at") @db.Timestamptz(3)
+
+  homeStore              Store?                  @relation("HomeStore", fields: [homeStoreId], references: [id], onDelete: Restrict)
+  webCredential          WebCredential?
+  pinCredential          EmployeePinCredential?
+  transfers              EmployeeStoreTransfer[] @relation("TransferredUser")
+  transfersPerformed     EmployeeStoreTransfer[] @relation("TransferActor")
+  activationCodesCreated DeviceActivationCode[]  @relation("ActivationCreator")
+  auditLogs              AuditLog[]              @relation("AuditActorUser")
+  attendanceRecords      AttendanceRecord[]
+  cashierSessions        CashierSession[]
+  registerSessionsOpened RegisterSession[]       @relation("RegisterOpenedByUser")
+  registerSessionsClosed RegisterSession[]       @relation("RegisterClosedByUser")
+  movementsPerformed     StockMovement[]         @relation("MovementPerformedByUser")
+  salesAsCashier         Sale[]                  @relation("SaleCashierUser")
+  stockReceiptsCreated   StockReceipt[]          @relation("StockReceiptCreator")
+  stockReceiptsReviewed  StockReceipt[]          @relation("StockReceiptReviewer")
+  stockReceiptsPosted    StockReceipt[]          @relation("StockReceiptPoster")
+
+  @@index([homeStoreId, status])
+  @@map("users")
+}
+
+model WebCredential {
+  userId            BigInt    @id @map("user_id")
+  email             String    @db.Text
+  passwordHash      String    @map("password_hash") @db.Text
+  failedAttempts    Int       @default(0) @map("failed_attempts")
+  lockedUntil       DateTime? @map("locked_until") @db.Timestamptz(3)
+  passwordChangedAt DateTime  @default(now()) @map("password_changed_at") @db.Timestamptz(3)
+
+  user User @relation(fields: [userId], references: [id], onDelete: Restrict)
+
+  @@map("web_credentials")
+}
+
+model EmployeePinCredential {
+  userId         BigInt    @id @map("user_id")
+  pinHash        String    @map("pin_hash") @db.Text
+  pinVersion     Int       @default(1) @map("pin_version")
+  failedAttempts Int       @default(0) @map("failed_attempts")
+  lockedUntil    DateTime? @map("locked_until") @db.Timestamptz(3)
+  changedAt      DateTime  @default(now()) @map("changed_at") @db.Timestamptz(3)
+
+  user User @relation(fields: [userId], references: [id], onDelete: Restrict)
+
+  @@map("employee_pin_credentials")
+}
+
+model EmployeeStoreTransfer {
+  id                  BigInt   @id @default(autoincrement())
+  userId              BigInt   @map("user_id")
+  fromStoreId         BigInt   @map("from_store_id")
+  toStoreId           BigInt   @map("to_store_id")
+  transferredByUserId BigInt   @map("transferred_by_user_id")
+  effectiveAt         DateTime @map("effective_at") @db.Timestamptz(3)
+  reason              String?  @db.Text
+  createdAt           DateTime @default(now()) @map("created_at") @db.Timestamptz(3)
+
+  user          User  @relation("TransferredUser", fields: [userId], references: [id], onDelete: Restrict)
+  fromStore     Store @relation("TransferFromStore", fields: [fromStoreId], references: [id], onDelete: Restrict)
+  toStore       Store @relation("TransferToStore", fields: [toStoreId], references: [id], onDelete: Restrict)
+  transferredBy User  @relation("TransferActor", fields: [transferredByUserId], references: [id], onDelete: Restrict)
+
+  @@index([userId, effectiveAt])
+  @@index([fromStoreId])
+  @@index([toStoreId])
+  @@index([transferredByUserId])
+  @@map("employee_store_transfers")
+}
+
+model Device {
+  id                String    @id @db.Uuid
+  storeId           BigInt    @map("store_id")
+  displayName       String    @map("display_name") @db.Text
+  status            String    @default("ACTIVE") @db.Text
+  credentialHash    String    @map("credential_hash") @db.Text
+  credentialVersion Int       @default(1) @map("credential_version")
+  appVersion        String?   @map("app_version") @db.Text
+  lastHeartbeatAt   DateTime? @map("last_heartbeat_at") @db.Timestamptz(3)
+  lastSyncedAt      DateTime? @map("last_synced_at") @db.Timestamptz(3)
+  hasPendingOutbox   Boolean   @default(false) @map("has_pending_outbox")
+  outboxPendingCount Int       @default(0) @map("outbox_pending_count")
+  enrolledAt        DateTime  @default(now()) @map("enrolled_at") @db.Timestamptz(3)
+  updatedAt         DateTime  @updatedAt @map("updated_at") @db.Timestamptz(3)
+  revokedAt         DateTime? @map("revoked_at") @db.Timestamptz(3)
+
+  store               Store                  @relation(fields: [storeId], references: [id], onDelete: Restrict)
+  activationCodes     DeviceActivationCode[] @relation("ActivationUsedDevice")
+  auditLogs           AuditLog[]             @relation("AuditActorDevice")
+  checkInAttendances  AttendanceRecord[]     @relation("CheckInDevice")
+  checkOutAttendances AttendanceRecord[]     @relation("CheckOutDevice")
+  cashierSessions     CashierSession[]
+  registerSessions    RegisterSession[]
+  sales               Sale[]
+  syncOperations      SyncOperation[]
+  syncCheckpoint      DeviceSyncCheckpoint?
+  checkoutRejections  CheckoutRejection[]
+
+  @@index([storeId, status])
+  @@index([lastHeartbeatAt])
+  @@map("devices")
+}
+
+model DeviceActivationCode {
+  id              String    @id @db.Uuid
+  storeId         BigInt    @map("store_id")
+  codeLookup      String    @unique @map("code_lookup") @db.Text
+  secretHash      String    @map("secret_hash") @db.Text
+  createdByUserId BigInt    @map("created_by_user_id")
+  expiresAt       DateTime  @map("expires_at") @db.Timestamptz(3)
+  isReplacement   Boolean   @default(false) @map("is_replacement")
+  usedAt          DateTime? @map("used_at") @db.Timestamptz(3)
+  revokedAt       DateTime? @map("revoked_at") @db.Timestamptz(3)
+  usedByDeviceId  String?   @map("used_by_device_id") @db.Uuid
+  createdAt       DateTime  @default(now()) @map("created_at") @db.Timestamptz(3)
+
+  store        Store   @relation(fields: [storeId], references: [id], onDelete: Restrict)
+  createdBy    User    @relation("ActivationCreator", fields: [createdByUserId], references: [id], onDelete: Restrict)
+  usedByDevice Device? @relation("ActivationUsedDevice", fields: [usedByDeviceId], references: [id], onDelete: Restrict)
+
+  @@index([storeId, expiresAt])
+  @@index([createdByUserId])
+  @@index([usedByDeviceId])
+  @@map("device_activation_codes")
+}
+
+model AuditLog {
+  id            BigInt   @id @default(autoincrement())
+  actorType     String   @map("actor_type") @db.Text
+  actorUserId   BigInt?  @map("actor_user_id")
+  actorDeviceId String?  @map("actor_device_id") @db.Uuid
+  storeId       BigInt?  @map("store_id")
+  action        String   @db.Text
+  entityType    String   @map("entity_type") @db.Text
+  entityId      String   @map("entity_id") @db.Text
+  metadata      Json     @default("{}") @db.JsonB
+  requestId     String?  @map("request_id") @db.Uuid
+  createdAt     DateTime @default(now()) @map("created_at") @db.Timestamptz(3)
+
+  actorUser   User?   @relation("AuditActorUser", fields: [actorUserId], references: [id], onDelete: Restrict)
+  actorDevice Device? @relation("AuditActorDevice", fields: [actorDeviceId], references: [id], onDelete: Restrict)
+  store       Store?  @relation(fields: [storeId], references: [id], onDelete: Restrict)
+
+  @@index([actorUserId])
+  @@index([actorDeviceId])
+  @@index([storeId, createdAt])
+  @@index([requestId])
+  @@index([createdAt])
+  @@map("audit_logs")
+}
+
+model AttendanceRecord {
+  id                   String    @id @db.Uuid
+  userId               BigInt    @map("user_id")
+  storeId              BigInt    @map("store_id")
+  homeStoreIdAtCheckIn BigInt    @map("home_store_id_at_check_in")
+  isSupport            Boolean   @default(false) @map("is_support")
+  checkInDeviceId      String    @map("check_in_device_id") @db.Uuid
+  checkOutDeviceId     String?   @map("check_out_device_id") @db.Uuid
+  checkInAt            DateTime  @default(now()) @map("check_in_at") @db.Timestamptz(3)
+  checkOutAt           DateTime? @map("check_out_at") @db.Timestamptz(3)
+  isMissedCheckout     Boolean   @default(false) @map("is_missed_checkout")
+  isManualEntry        Boolean   @default(false) @map("is_manual_entry")
+  receivedAt           DateTime? @map("received_at") @db.Timestamptz(3)
+  createdAt            DateTime  @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt            DateTime  @updatedAt @map("updated_at") @db.Timestamptz(3)
+
+  user           User    @relation(fields: [userId], references: [id], onDelete: Restrict)
+  store          Store   @relation("StoreAttendance", fields: [storeId], references: [id], onDelete: Restrict)
+  homeStore      Store   @relation("HomeStoreAttendance", fields: [homeStoreIdAtCheckIn], references: [id], onDelete: Restrict)
+  checkInDevice  Device  @relation("CheckInDevice", fields: [checkInDeviceId], references: [id], onDelete: Restrict)
+  checkOutDevice Device? @relation("CheckOutDevice", fields: [checkOutDeviceId], references: [id], onDelete: Restrict)
+
+  @@index([userId, checkOutAt])
+  @@index([storeId, checkInAt])
+  @@map("attendance_records")
+}
+
+model CashierSession {
+  id             String    @id @db.Uuid
+  deviceId       String    @map("device_id") @db.Uuid
+  storeId        BigInt    @map("store_id")
+  userId         BigInt    @map("user_id")
+  status         String    @default("ACTIVE") @db.Text // ACTIVE, LOCKED, CLOSED, REVOKED
+  startedAt      DateTime  @default(now()) @map("started_at") @db.Timestamptz(3)
+  lastActivityAt DateTime  @default(now()) @map("last_activity_at") @db.Timestamptz(3)
+  lockedAt       DateTime? @map("locked_at") @db.Timestamptz(3)
+  endedAt        DateTime? @map("ended_at") @db.Timestamptz(3)
+
+  device Device @relation(fields: [deviceId], references: [id], onDelete: Restrict)
+  store  Store  @relation(fields: [storeId], references: [id], onDelete: Restrict)
+  user   User   @relation(fields: [userId], references: [id], onDelete: Restrict)
+
+  @@index([deviceId, endedAt])
+  @@index([userId, status])
+  @@map("cashier_sessions")
+}
+
+model RegisterSession {
+  id              String    @id @db.Uuid
+  deviceId        String    @map("device_id") @db.Uuid
+  storeId         BigInt    @map("store_id")
+  openedByUserId  BigInt    @map("opened_by_user_id")
+  closedByUserId  BigInt?   @map("closed_by_user_id")
+  openingCashVnd  BigInt    @map("opening_cash_vnd")
+  expectedCashVnd BigInt?   @map("expected_cash_vnd")
+  actualCashVnd   BigInt?   @map("actual_cash_vnd")
+  varianceVnd          BigInt?   @map("variance_vnd")
+  openingDenominations Json?     @map("opening_denominations")
+  closingDenominations Json?     @map("closing_denominations")
+    compensationCashVnd BigInt? @map("compensation_cash_vnd")
+    compensationDenominations Json? @map("compensation_denominations")
+    compensationNote String? @map("compensation_note") @db.Text
+    closingMode String? @map("closing_mode") @db.Text
+    handoverFromSessionId String? @unique @map("handover_from_session_id") @db.Uuid
+  openedAt             DateTime  @default(now()) @map("opened_at") @db.Timestamptz(3)
+  closedAt             DateTime? @map("closed_at") @db.Timestamptz(3)
+  status               String    @default("OPEN") @db.Text // OPEN, CLOSED
+
+  device       Device @relation(fields: [deviceId], references: [id], onDelete: Restrict)
+  store        Store  @relation(fields: [storeId], references: [id], onDelete: Restrict)
+  openedByUser User   @relation("RegisterOpenedByUser", fields: [openedByUserId], references: [id], onDelete: Restrict)
+  closedByUser User?  @relation("RegisterClosedByUser", fields: [closedByUserId], references: [id], onDelete: Restrict)
+  sales        Sale[]
+
+    handoverFrom RegisterSession? @relation("RegisterHandover", fields: [handoverFromSessionId], references: [id], onDelete: Restrict, onUpdate: NoAction, map: "register_handover_source_fk")
+    handoverTo RegisterSession? @relation("RegisterHandover")
+
+  @@index([deviceId, closedAt])
+  @@index([storeId, openedAt])
+  @@map("register_sessions")
+}
+
+model Ingredient {
+  id        BigInt   @id @default(autoincrement())
+  code      String   @unique @db.Text
+  name      String   @db.Text
+  baseUnit  String   @map("base_unit") @db.Text // G, ML, PIECE
+  isActive  Boolean  @default(true) @map("is_active")
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt DateTime @updatedAt @map("updated_at") @db.Timestamptz(3)
+
+  recipeItems          RecipeItem[]
+  toppingItems         ToppingItem[]
+  stockBalances        StockBalance[]
+  stockMovements       StockMovement[]
+  saleItemConsumptions SaleItemConsumption[]
+  stockReceiptLines    StockReceiptLine[]
+
+  @@map("ingredients")
+}
+
+model RecipeVersion {
+  id               BigInt    @id @default(autoincrement())
+  productVariantId BigInt    @map("product_variant_id")
+  versionNo        Int       @map("version_no")
+  status           String    @default("DRAFT") @db.Text // DRAFT, ACTIVE, RETIRED
+  effectiveAt      DateTime? @map("effective_at") @db.Timestamptz(3)
+  createdAt        DateTime  @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt        DateTime  @updatedAt @map("updated_at") @db.Timestamptz(3)
+
+  productVariant ProductVariant @relation(fields: [productVariantId], references: [id], onDelete: Restrict)
+  items          RecipeItem[]
+  saleItems      SaleItem[]
+
+  @@unique([productVariantId, versionNo])
+  @@index([productVariantId, status])
+  @@map("recipe_versions")
+}
+
+model RecipeItem {
+  id              BigInt  @id @default(autoincrement())
+  recipeVersionId BigInt  @map("recipe_version_id")
+  ingredientId    BigInt  @map("ingredient_id")
+  quantity        Decimal @db.Decimal(14, 3)
+
+  recipeVersion RecipeVersion @relation(fields: [recipeVersionId], references: [id], onDelete: Cascade)
+  ingredient    Ingredient    @relation(fields: [ingredientId], references: [id], onDelete: Restrict)
+
+  @@unique([recipeVersionId, ingredientId])
+  @@index([recipeVersionId])
+  @@index([ingredientId])
+  @@map("recipe_items")
+}
+
+model ToppingItem {
+  id           BigInt  @id @default(autoincrement())
+  toppingId    BigInt  @map("topping_id")
+  ingredientId BigInt  @map("ingredient_id")
+  quantity     Decimal @db.Decimal(14, 3)
+
+  topping    Topping    @relation(fields: [toppingId], references: [id], onDelete: Cascade)
+  ingredient Ingredient @relation(fields: [ingredientId], references: [id], onDelete: Restrict)
+
+  @@unique([toppingId, ingredientId])
+  @@index([toppingId])
+  @@index([ingredientId])
+  @@map("topping_items")
+}
+
+model StockBalance {
+  storeId      BigInt   @map("store_id")
+  ingredientId BigInt   @map("ingredient_id")
+  quantity     Decimal  @default(0) @db.Decimal(14, 3)
+  version      BigInt   @default(1)
+  updatedAt    DateTime @updatedAt @map("updated_at") @db.Timestamptz(3)
+
+  store      Store      @relation(fields: [storeId], references: [id], onDelete: Restrict)
+  ingredient Ingredient @relation(fields: [ingredientId], references: [id], onDelete: Restrict)
+
+  @@id([storeId, ingredientId])
+  @@index([ingredientId])
+  @@map("stock_balances")
+}
+
+model StockMovement {
+  id                    String   @id @db.Uuid
+  storeId               BigInt   @map("store_id")
+  ingredientId          BigInt   @map("ingredient_id")
+  movementType          String   @map("movement_type") @db.Text // RECEIPT, SALE_USAGE, ADJUSTMENT, WASTE
+  quantityDelta         Decimal  @map("quantity_delta") @db.Decimal(14, 3)
+  balanceAfter          Decimal  @map("balance_after") @db.Decimal(14, 3)
+  saleItemConsumptionId String?  @unique @map("sale_item_consumption_id") @db.Uuid
+  receiptLineId         String?  @unique @map("receipt_line_id") @db.Uuid
+  performedByUserId     BigInt?  @map("performed_by_user_id")
+  sourceOperationId     String?  @map("source_operation_id") @db.Uuid
+  reason                String?  @db.Text
+  occurredAt            DateTime @map("occurred_at") @db.Timestamptz(3)
+  createdAt             DateTime @default(now()) @map("created_at") @db.Timestamptz(3)
+
+  store               Store                @relation(fields: [storeId], references: [id], onDelete: Restrict)
+  ingredient          Ingredient           @relation(fields: [ingredientId], references: [id], onDelete: Restrict)
+  performedByUser     User?                @relation("MovementPerformedByUser", fields: [performedByUserId], references: [id], onDelete: Restrict)
+  saleItemConsumption SaleItemConsumption? @relation(fields: [saleItemConsumptionId], references: [id], onDelete: SetNull)
+  receiptLine         StockReceiptLine?    @relation("ReceiptLineMovement", fields: [receiptLineId], references: [id], onDelete: SetNull)
+
+  @@index([storeId, ingredientId, occurredAt])
+  @@index([sourceOperationId])
+  @@map("stock_movements")
+}
+
+model Sale {
+  id                String    @id @db.Uuid
+  storeId           BigInt    @map("store_id")
+  deviceId          String    @map("device_id") @db.Uuid
+  cashierUserId     BigInt    @map("cashier_user_id")
+  registerSessionId String?   @map("register_session_id") @db.Uuid
+  saleNumber        String    @map("sale_number") @db.Text
+  status            String    @default("PAID") @db.Text // PAYMENT_PENDING, PAID, EXPIRED, CANCELLED
+  subtotalVnd       BigInt    @map("subtotal_vnd")
+  taxVnd            BigInt    @map("tax_vnd")
+  totalVnd          BigInt    @map("total_vnd")
+  note              String?   @db.Text
+  businessDate      DateTime  @map("business_date") @db.Date
+  completedAt       DateTime? @map("completed_at") @db.Timestamptz(3)
+  createdAt         DateTime  @default(now()) @map("created_at") @db.Timestamptz(3)
+  receivedAt        DateTime? @map("received_at") @db.Timestamptz(3)
+
+  store           Store            @relation(fields: [storeId], references: [id], onDelete: Restrict)
+  device          Device           @relation(fields: [deviceId], references: [id], onDelete: Restrict)
+  cashierUser     User             @relation("SaleCashierUser", fields: [cashierUserId], references: [id], onDelete: Restrict)
+  registerSession RegisterSession? @relation(fields: [registerSessionId], references: [id], onDelete: SetNull)
+  items           SaleItem[]
+  payments        Payment[]
+
+  @@unique([storeId, saleNumber])
+  @@index([storeId, businessDate])
+  @@index([deviceId, createdAt])
+  @@map("sales")
+}
+
+model SaleItem {
+  id                  String  @id @db.Uuid
+  saleId              String  @map("sale_id") @db.Uuid
+  productId           BigInt  @map("product_id")
+  productVariantId    BigInt  @map("product_variant_id")
+  recipeVersionId     BigInt? @map("recipe_version_id")
+  productNameSnapshot String  @map("product_name_snapshot") @db.Text
+  variantNameSnapshot String  @map("variant_name_snapshot") @db.Text
+  baseUnitPriceVnd    BigInt  @map("base_unit_price_vnd")
+  quantity            Int
+  taxRateBpsSnapshot  Int     @default(0) @map("tax_rate_bps_snapshot")
+  taxAmountVnd        BigInt  @default(0) @map("tax_amount_vnd")
+  subtotalVnd         BigInt  @map("subtotal_vnd")
+  lineTotalVnd        BigInt  @map("line_total_vnd")
+  note                String? @db.Text
+
+  sale           Sale                  @relation(fields: [saleId], references: [id], onDelete: Cascade)
+  product        Product               @relation(fields: [productId], references: [id], onDelete: Restrict)
+  productVariant ProductVariant        @relation(fields: [productVariantId], references: [id], onDelete: Restrict)
+  recipeVersion  RecipeVersion?        @relation(fields: [recipeVersionId], references: [id], onDelete: SetNull)
+  toppings       SaleItemTopping[]
+  consumptions   SaleItemConsumption[]
+
+  @@index([saleId])
+  @@index([productId])
+  @@map("sale_items")
+}
+
+model SaleItemTopping {
+  id                   String @id @db.Uuid
+  saleItemId           String @map("sale_item_id") @db.Uuid
+  toppingId            BigInt @map("topping_id")
+  toppingNameSnapshot  String @map("topping_name_snapshot") @db.Text
+  unitPriceVndSnapshot BigInt @map("unit_price_vnd_snapshot")
+  quantityPerItem      Int    @default(1) @map("quantity_per_item")
+
+  saleItem SaleItem @relation(fields: [saleItemId], references: [id], onDelete: Cascade)
+  topping  Topping  @relation(fields: [toppingId], references: [id], onDelete: Restrict)
+
+  @@unique([saleItemId, toppingId])
+  @@index([saleItemId])
+  @@index([toppingId])
+  @@map("sale_item_toppings")
+}
+
+model SaleItemConsumption {
+  id                     String  @id @db.Uuid
+  saleItemId             String  @map("sale_item_id") @db.Uuid
+  ingredientId           BigInt  @map("ingredient_id")
+  ingredientNameSnapshot String  @map("ingredient_name_snapshot") @db.Text
+  unitSnapshot           String  @map("unit_snapshot") @db.Text
+  quantityPerItem        Decimal @map("quantity_per_item") @db.Decimal(14, 3)
+  quantityTotal          Decimal @map("quantity_total") @db.Decimal(14, 3)
+
+  saleItem      SaleItem       @relation(fields: [saleItemId], references: [id], onDelete: Cascade)
+  ingredient    Ingredient     @relation(fields: [ingredientId], references: [id], onDelete: Restrict)
+  stockMovement StockMovement?
+
+  @@unique([saleItemId, ingredientId])
+  @@index([saleItemId])
+  @@index([ingredientId])
+  @@map("sale_item_consumptions")
+}
+
+// Tombstone for a checkout rejected before provider submission. Prevents a
+// delayed retry with the same UUID from accepting money after POS releases it.
+model CheckoutRejection {
+  saleId String @id @map("sale_id") @db.Uuid
+  storeId BigInt @map("store_id")
+  deviceId String @map("device_id") @db.Uuid
+  requestHash String @map("request_hash") @db.Text
+  amountVnd BigInt @map("amount_vnd")
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(3)
+  store Store @relation(fields: [storeId], references: [id], onDelete: Restrict)
+  device Device @relation(fields: [deviceId], references: [id], onDelete: Restrict)
+  @@index([deviceId, createdAt])
+  @@map("checkout_rejections")
+}
+
+model Payment {
+  id                    String    @id @db.Uuid
+  saleId                String    @map("sale_id") @db.Uuid
+  storeId               BigInt    @map("store_id")
+  method                String    @db.Text // CASH, ZALOPAY, MOMO
+  provider              String    @default("INTERNAL") @db.Text // INTERNAL, ZALOPAY_SANDBOX, MOMO_SANDBOX
+  status                String    @default("PENDING") @db.Text // PENDING, PAID, FAILED, EXPIRED, CANCELLED
+  amountVnd             BigInt    @map("amount_vnd")
+  merchantOrderId       String?   @unique @map("merchant_order_id") @db.Text
+  providerTransactionId String?   @map("provider_transaction_id") @db.Text
+  providerOrderJson      Json?     @map("provider_order_json") @db.JsonB
+  checkoutRequestHash    String?   @map("checkout_request_hash") @db.Text
+  createRequestedAt     DateTime? @map("create_requested_at") @db.Timestamptz(3)
+  providerCreateRequestJson Json? @map("provider_create_request_json") @db.JsonB
+  createLeaseUntil      DateTime? @map("create_lease_until") @db.Timestamptz(3)
+  createAttemptCount    Int       @default(0) @map("create_attempt_count")
+  lastQueriedAt         DateTime? @map("last_queried_at") @db.Timestamptz(3)
+  providerConfirmedAt   DateTime? @map("provider_confirmed_at") @db.Timestamptz(3)
+  cancelledAt           DateTime? @map("cancelled_at") @db.Timestamptz(3)
+  providerFinalizedAt   DateTime? @map("provider_finalized_at") @db.Timestamptz(3)
+  paidAt                DateTime? @map("paid_at") @db.Timestamptz(3)
+  expiresAt             DateTime? @map("expires_at") @db.Timestamptz(3)
+  createdAt             DateTime  @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt             DateTime  @updatedAt @map("updated_at") @db.Timestamptz(3)
+
+  sale  Sale  @relation(fields: [saleId], references: [id], onDelete: Restrict)
+  store Store @relation(fields: [storeId], references: [id], onDelete: Restrict)
+
+  @@index([saleId])
+  @@index([storeId, status])
+  @@map("payments")
+}
+
+model SyncOperation {
+  operationId   String    @id @map("operation_id") @db.Uuid
+  deviceId      String    @map("device_id") @db.Uuid
+  storeId       BigInt    @map("store_id")
+  operationType String    @map("operation_type") @db.Text
+  payloadHash   String    @map("payload_hash") @db.Text
+  status        String    @default("COMPLETED") @db.Text // PROCESSING, COMPLETED, REJECTED
+  result        Json?     @db.JsonB
+  receivedAt    DateTime  @default(now()) @map("received_at") @db.Timestamptz(3)
+  completedAt   DateTime? @map("completed_at") @db.Timestamptz(3)
+
+  device Device @relation(fields: [deviceId], references: [id], onDelete: Restrict)
+  store  Store  @relation(fields: [storeId], references: [id], onDelete: Restrict)
+
+  @@index([deviceId, operationType])
+  @@index([storeId, receivedAt])
+  @@map("sync_operations")
+}
+
+model SyncChange {
+  cursor     BigInt   @id @default(autoincrement())
+  storeId    BigInt?  @map("store_id")
+  entityType String   @map("entity_type") @db.Text
+  entityId   String   @map("entity_id") @db.Text
+  changeType String   @map("change_type") @db.Text // UPSERT, DELETE
+  payload    Json     @db.JsonB
+  changedAt  DateTime @default(now()) @map("changed_at") @db.Timestamptz(3)
+
+  store Store? @relation(fields: [storeId], references: [id], onDelete: Restrict)
+
+  @@index([storeId, cursor])
+  @@map("sync_changes")
+}
+
+model DeviceSyncCheckpoint {
+  deviceId   String   @id @map("device_id") @db.Uuid
+  lastCursor BigInt   @default(0) @map("last_cursor")
+  updatedAt  DateTime @updatedAt @map("updated_at") @db.Timestamptz(3)
+
+  device Device @relation(fields: [deviceId], references: [id], onDelete: Restrict)
+
+  @@map("device_sync_checkpoints")
+}
+
+model StockReceipt {
+  id               String    @id @db.Uuid
+  storeId          BigInt    @map("store_id")
+  receiptCode      String    @unique @map("receipt_code") @db.Text
+  sourceType       String    @map("source_type") @db.Text // EXTERNAL_SUPPLIER, CENTRAL_WAREHOUSE_UNTRACKED
+  sourceName       String    @map("source_name") @db.Text
+  documentNo       String?   @map("document_no") @db.Text
+  documentDate     DateTime? @map("document_date") @db.Timestamptz(3)
+  status           String    @default("DRAFT") @db.Text // DRAFT, REVIEWED, POSTED, REJECTED
+  totalCostVnd     BigInt    @default(0) @map("total_cost_vnd")
+  idempotencyKey   String?   @unique @map("idempotency_key") @db.Text
+  note             String?   @db.Text
+  rejectionReason  String?   @map("rejection_reason") @db.Text
+  createdByUserId  BigInt    @map("created_by_user_id")
+  reviewedByUserId BigInt?   @map("reviewed_by_user_id")
+  postedByUserId   BigInt?   @map("posted_by_user_id")
+  postedAt         DateTime? @map("posted_at") @db.Timestamptz(3)
+  createdAt        DateTime  @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt        DateTime  @updatedAt @map("updated_at") @db.Timestamptz(3)
+
+  store          Store              @relation(fields: [storeId], references: [id], onDelete: Restrict)
+  createdByUser  User               @relation("StockReceiptCreator", fields: [createdByUserId], references: [id], onDelete: Restrict)
+  reviewedByUser User?              @relation("StockReceiptReviewer", fields: [reviewedByUserId], references: [id], onDelete: Restrict)
+  postedByUser   User?              @relation("StockReceiptPoster", fields: [postedByUserId], references: [id], onDelete: Restrict)
+  lines          StockReceiptLine[]
+
+  @@index([storeId, status])
+  @@index([createdAt])
+  @@map("stock_receipts")
+}
+
+model StockReceiptLine {
+  id               String   @id @db.Uuid
+  receiptId        String   @map("receipt_id") @db.Uuid
+  ingredientId     BigInt   @map("ingredient_id")
+  lineNumber       Int      @map("line_number")
+  receivedQuantity Decimal  @map("received_quantity") @db.Decimal(14, 3)
+  baseUnit         String   @map("base_unit") @db.Text // G, ML, PIECE
+  unitCostVnd      Decimal  @default(0) @map("unit_cost_vnd") @db.Decimal(14, 2)
+  lineTotalVnd     BigInt   @default(0) @map("line_total_vnd")
+  note             String?  @db.Text
+  validationErrors String?  @map("validation_errors") @db.Text
+
+  receipt       StockReceipt   @relation(fields: [receiptId], references: [id], onDelete: Cascade)
+  ingredient    Ingredient     @relation(fields: [ingredientId], references: [id], onDelete: Restrict)
+  stockMovement StockMovement? @relation("ReceiptLineMovement")
+
+  @@unique([receiptId, lineNumber])
+  @@index([receiptId])
+  @@index([ingredientId])
+  @@map("stock_receipt_lines")
+}

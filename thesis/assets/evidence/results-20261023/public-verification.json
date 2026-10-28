@@ -1,0 +1,17 @@
+{
+  "at": "2026-10-23T03:20:53.177Z",
+  "ownerVisibleEmployeeRows": 4,
+  "managerVisibleEmployeeRows": 2,
+  "codeSearch": true,
+  "foreignStoreForbidden": true,
+  "browserResults": [
+    {
+      "role": "OWNER",
+      "rows": 4
+    },
+    {
+      "role": "STORE_MANAGER",
+      "rows": 2
+    }
+  ]
+}

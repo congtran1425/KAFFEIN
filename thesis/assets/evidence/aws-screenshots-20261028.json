@@ -1,0 +1,281 @@
+{
+  "formatVersion": 1,
+  "kind": "screenshot-evidence",
+  "receivedOnLocalDate": "2026-10-28",
+  "timeZone": "Asia/Ho_Chi_Minh",
+  "source": "User-supplied PNG files under thesis/assets/screenshots/aws/",
+  "verificationMethod": "Visual reading of every screenshot; cross-check against project source. No live AWS query or business test was run.",
+  "originalsPreserved": true,
+  "layout": "Original 1920x1080 PNG files are displayed in clipped Typst viewports for legibility; source image bytes are unchanged.",
+  "files": [
+    {
+      "path": "../screenshots/aws/AWS-01-ecs-service.png",
+      "width": 1920,
+      "height": 1080,
+      "bytes": 273195,
+      "sha256": "97f412253df39c4a0480fec4116e403e70925f0edd5ab719614ef66bed234cf7",
+      "visible": {
+        "service": "kaffein-api-service",
+        "status": "Active",
+        "desiredTasks": 1,
+        "runningTasks": 1,
+        "pendingTasks": 0,
+        "taskDefinitionRevision": 6,
+        "deploymentStatus": "Success",
+        "consoleLastUpdated": "2026-10-28T00:31:00+07:00"
+      },
+      "use": "chapter4",
+      "limit": "Console refresh time is visible in this screenshot; it is not the deployment start time."
+    },
+    {
+      "path": "../screenshots/aws/AWS-02-ecs-containers.png",
+      "width": 1920,
+      "height": 1080,
+      "bytes": 269146,
+      "sha256": "7f28382cc6af70a3962ed3054dee031115fd8a15659ea58f7a4abc4a827dfdea",
+      "visible": {
+        "containers": [
+          "KaffeinWebContainer",
+          "KaffeinApiContainer"
+        ],
+        "containerStatus": "Running",
+        "containerHealth": "Healthy",
+        "sameTask": true
+      },
+      "use": "chapter4",
+      "limit": "Image tags and digests are truncated; no independent link from task to GitHub commit is established."
+    },
+    {
+      "path": "../screenshots/aws/AWS-03-alb-listeners.png",
+      "width": 1920,
+      "height": 1080,
+      "bytes": 266674,
+      "sha256": "dd6747f999fc80ea0be126055a3d6ad09454cc155cca77ccb94c1c95d7dec8d9",
+      "visible": {
+        "loadBalancer": "kaffein-alb",
+        "listeners": [
+          "HTTPS:443",
+          "HTTP:80"
+        ],
+        "httpRedirectStatus": 301,
+        "httpRedirectDestinationPort": 443
+      },
+      "use": "chapter4"
+    },
+    {
+      "path": "../screenshots/aws/AWS-04-alb-routing.png",
+      "width": 1920,
+      "height": 1080,
+      "bytes": 242893,
+      "sha256": "ba3c9f30d3f0814edc14dbbef326fddb06dd472f89f7193a85ec97f307fe7fc9",
+      "visible": {
+        "listener": "HTTPS:443",
+        "webHostRulePriority": 10,
+        "host": "admin-aws.congtc145.id.vn",
+        "defaultAction": "Forward to target group"
+      },
+      "use": "chapter4",
+      "limit": "Forward-action target names are cut off in the screenshot; API/Web routing is also checked against CDK."
+    },
+    {
+      "path": "../screenshots/aws/AWS-05-alb-targets-api.png",
+      "width": 1920,
+      "height": 1080,
+      "bytes": 258195,
+      "sha256": "e82923556d1a44a76fb0a80fc47d58e55e250571dbbfaa6fb2e73d88e7965e7e",
+      "visible": {
+        "targetGroup": "Kaffei-Kaffe-VW3SFFH1Y7BT",
+        "port": 3000,
+        "registeredTargets": 1,
+        "healthyTargets": 1,
+        "unhealthyTargets": 0
+      },
+      "use": "appendixE"
+    },
+    {
+      "path": "../screenshots/aws/AWS-05-alb-targets-web.png",
+      "width": 1920,
+      "height": 1080,
+      "bytes": 258604,
+      "sha256": "966bd70984f5088e91eef5b223028c3a4a7df43a93c38ffe04b1935dc54f7d62",
+      "visible": {
+        "targetGroup": "Kaffei-Kaffe-CL3KBQWSW0JM",
+        "port": 8080,
+        "registeredTargets": 1,
+        "healthyTargets": 1,
+        "unhealthyTargets": 0
+      },
+      "use": "appendixE"
+    },
+    {
+      "path": "../screenshots/aws/AWS-06-rds-network.png",
+      "width": 1920,
+      "height": 1080,
+      "bytes": 280593,
+      "sha256": "de3492187335aa85fa538733b1c17829511290ecd741dd621443d425b0f60c7a",
+      "visible": {
+        "availabilityZone": "ap-southeast-1b",
+        "port": 5432,
+        "publiclyAccessible": false,
+        "subnets": 2,
+        "securityGroupStatus": "Active"
+      },
+      "use": "appendixE"
+    },
+    {
+      "path": "../screenshots/aws/AWS-07-rds-config.png",
+      "width": 1920,
+      "height": 1080,
+      "bytes": 260800,
+      "sha256": "8355adae8caf70e25df03124eda5eba607991cbd8c4b45fb5ace5a0601c796e7",
+      "visible": {
+        "engineVersion": "17.6",
+        "instanceClass": "db.t4g.micro",
+        "vCpu": 2,
+        "ramLabel": "1 GB",
+        "multiAz": false,
+        "encryption": "Enabled",
+        "storageType": "gp3",
+        "allocatedStorageGiB": 20,
+        "maxStorageGiB": 50,
+        "storageAutoscaling": true,
+        "deletionProtection": true
+      },
+      "use": "chapter4",
+      "limit": "Backup retention is not visible. The one-day setting is a CDK claim, not a screenshot observation."
+    },
+    {
+      "path": "../screenshots/aws/AWS-08-ecs-security-group.png",
+      "width": 1920,
+      "height": 1080,
+      "bytes": 291017,
+      "sha256": "7efe0cf01bfccb0d8eefeea120b8cdda1ed7b1fcf28bcb91e2f1b0d38ff967b5",
+      "visible": {
+        "inboundTcpPorts": [
+          8080,
+          3000
+        ],
+        "sourceType": "ALB security group"
+      },
+      "use": "appendixE",
+      "limit": "Source ID is truncated. Relationship is cross-checked against the group list and CDK."
+    },
+    {
+      "path": "../screenshots/aws/AWS-09-rds-security-group.png",
+      "width": 1920,
+      "height": 1080,
+      "bytes": 282394,
+      "sha256": "f128bca00f08d99fb0149c392e4c4de3ab13504dae59c65abe5d01b2d81a6379",
+      "visible": {
+        "inboundTcpPorts": [
+          5432
+        ],
+        "sourceType": "ECS security group"
+      },
+      "use": "appendixE",
+      "limit": "Source ID is truncated. Relationship is cross-checked against the group list and CDK."
+    },
+    {
+      "path": "../screenshots/aws/AWS-10-vpc-map.png",
+      "width": 1920,
+      "height": 1080,
+      "bytes": 282529,
+      "sha256": "069d43122422d86756b00758729f30e68de85021903ae39e8bb203c19b68477f",
+      "visible": {
+        "cidr": "10.0.0.0/16",
+        "availabilityZones": [
+          "ap-southeast-1a",
+          "ap-southeast-1b"
+        ],
+        "publicSubnetCidrs": [
+          "10.0.0.0/24",
+          "10.0.1.0/24"
+        ],
+        "databaseIsolatedSubnetCidrs": [
+          "10.0.2.0/24",
+          "10.0.3.0/24"
+        ],
+        "subnets": 4,
+        "routeTables": 5,
+        "networkConnections": 1
+      },
+      "use": "appendixE",
+      "limit": "The no-NAT setting is also traced to CDK; the image is not an independent route-table dump."
+    },
+    {
+      "path": "../screenshots/aws/AWS-11-cloudwatch-dashboard.png",
+      "width": 1920,
+      "height": 1080,
+      "bytes": 192202,
+      "sha256": "eda02b7d032aa29599ba303fea6e34f584c5d8b7b7a82b5112269fcf3a4a98a1",
+      "visible": {
+        "dashboard": "kaffein-demo",
+        "windowHours": 3,
+        "timeZone": "UTC",
+        "axisLabels": [
+          "15:00",
+          "18:00"
+        ],
+        "widgetsWithData": [
+          "ApiLatency",
+          "ApiCpu",
+          "ApiMemory",
+          "DbConnections",
+          "DbFreeStorage"
+        ],
+        "alb5xx": "No data available"
+      },
+      "use": "chapter4",
+      "limit": "No absolute date is visible. TargetResponseTime is ALB-wide p95 per five-minute interval; CPU and memory are ECS service metrics. No controlled load or benchmark is supplied."
+    },
+    {
+      "path": "../screenshots/aws/AWS-12-cloudwatch-logs.png",
+      "width": 1920,
+      "height": 1080,
+      "bytes": 258418,
+      "sha256": "3b58b68ff44e21df6839267b036ca83c60e4bf5984300375e30132e39ed29e63",
+      "visible": {
+        "logGroup": "/ecs/kaffein-api",
+        "streamType": "api/KaffeinApiContainer",
+        "request": "GET /",
+        "status": 404,
+        "eventAtUtc": "2026-10-27T17:30:53.592Z",
+        "message": "NotFoundException: Cannot GET /"
+      },
+      "use": "appendixE",
+      "limit": "This is not a successful health-check event. Health uses /health. A Web log stream is not shown."
+    },
+    {
+      "path": "../screenshots/aws/AWS-20-github-release.png",
+      "width": 1920,
+      "height": 1080,
+      "bytes": 120614,
+      "sha256": "44f0f98d98586bfb7576fd59945afefce151f456b065fc87be241cc3db298c63",
+      "visible": {
+        "githubRunId": "40222286963",
+        "githubRunUrl": "https://github.com/congtran1425/Final-Project/actions/runs/40222286963",
+        "commit": "63f42cf",
+        "branch": "desktop-work",
+        "status": "Success",
+        "durationSeconds": 798,
+        "successfulJobs": [
+          "quality / api",
+          "quality / web-infra",
+          "quality / pos",
+          "deploy"
+        ],
+        "warnings": 23,
+        "notices": 4,
+        "displayedRelativeTime": "2 days ago"
+      },
+      "use": "chapter4",
+      "limit": "Absolute run date and test counts are not visible; do not reuse counts from release 0666abf as counts for this run."
+    }
+  ],
+  "limits": [
+    "The received date is not asserted as capture time for every image.",
+    "Healthy targets and idle-resource graphs do not establish an availability SLA or load-test result.",
+    "Runtime revision 6, GitHub run 40222286963 and historical test reports for 0666abf are kept distinct.",
+    "No screenshot supplies backup-restore, wallet payment or AWS POS end-to-end acceptance evidence."
+  ]
+}

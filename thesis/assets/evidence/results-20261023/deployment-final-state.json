@@ -1,0 +1,126 @@
+{
+  "at": "2026-10-23T03:24:13.868Z",
+  "run": "https://github.com/congtran1425/Final-Project/actions/runs/39893576810",
+  "commit": "0666abfdca37524df0eb539133e3e9c385058c01",
+  "stack": "UPDATE_COMPLETE",
+  "stackRole": "arn:aws:iam::ACCOUNT_ID:role/kaffein-cloudformation-release",
+  "parameters": [
+    {
+      "ParameterKey": "WebImageTag",
+      "ParameterValue": "git-0666abfdca37524df0eb539133e3e9c385058c01-39893576810-1"
+    },
+    {
+      "ParameterKey": "BootstrapVersion",
+      "ParameterValue": "/cdk-bootstrap/hnb659fds/version",
+      "ResolvedValue": "32"
+    },
+    {
+      "ParameterKey": "ApiImageTag",
+      "ParameterValue": "git-0666abfdca37524df0eb539133e3e9c385058c01-39893576810-1"
+    },
+    {
+      "ParameterKey": "ToolingImageTag",
+      "ParameterValue": "git-0666abfdca37524df0eb539133e3e9c385058c01-39893576810-1-tooling"
+    }
+  ],
+  "taskDefinition": "arn:aws:ecs:ap-southeast-1:ACCOUNT_ID:task-definition/KaffeinStackKaffeinApiTaskDefBE417B03:5",
+  "containers": [
+    {
+      "name": "KaffeinWebContainer",
+      "image": "ACCOUNT_ID.dkr.ecr.ap-southeast-1.amazonaws.com/kaffein-web:git-0666abfdca37524df0eb539133e3e9c385058c01-39893576810-1"
+    },
+    {
+      "name": "KaffeinApiContainer",
+      "image": "ACCOUNT_ID.dkr.ecr.ap-southeast-1.amazonaws.com/kaffein-api:git-0666abfdca37524df0eb539133e3e9c385058c01-39893576810-1"
+    }
+  ],
+  "desired": 1,
+  "running": 1,
+  "rollout": "COMPLETED",
+  "targets": [
+    {
+      "arn": "arn:aws:elasticloadbalancing:ap-southeast-1:ACCOUNT_ID:targetgroup/Kaffei-Kaffe-VW3SFFH1Y7BT/632b16d6234bbc4f",
+      "health": [
+        {
+          "Target": {
+            "Id": "PRIVATE_TASK_IP",
+            "Port": 3000,
+            "AvailabilityZone": "ap-southeast-1b"
+          },
+          "HealthCheckPort": "3000",
+          "TargetHealth": {
+            "State": "healthy"
+          },
+          "AdministrativeOverride": {
+            "State": "no_override",
+            "Reason": "AdministrativeOverride.NoOverride",
+            "Description": "No override is currently active on target"
+          }
+        }
+      ]
+    },
+    {
+      "arn": "arn:aws:elasticloadbalancing:ap-southeast-1:ACCOUNT_ID:targetgroup/Kaffei-Kaffe-CL3KBQWSW0JM/a095f7048b52c523",
+      "health": [
+        {
+          "Target": {
+            "Id": "PRIVATE_TASK_IP",
+            "Port": 8080,
+            "AvailabilityZone": "ap-southeast-1b"
+          },
+          "HealthCheckPort": "8080",
+          "TargetHealth": {
+            "State": "healthy"
+          },
+          "AdministrativeOverride": {
+            "State": "no_override",
+            "Reason": "AdministrativeOverride.NoOverride",
+            "Description": "No override is currently active on target"
+          }
+        }
+      ]
+    }
+  ],
+  "lifecycle": [
+    {
+      "repository": "kaffein-api",
+      "policy": {
+        "rules": [
+          {
+            "rulePriority": 1,
+            "description": "Expire untagged images; preserve tagged runtime and rollback images",
+            "selection": {
+              "tagStatus": "untagged",
+              "countType": "sinceImagePushed",
+              "countUnit": "days",
+              "countNumber": 7
+            },
+            "action": {
+              "type": "expire"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "repository": "kaffein-web",
+      "policy": {
+        "rules": [
+          {
+            "rulePriority": 1,
+            "description": "Expire untagged images; preserve tagged runtime and rollback images",
+            "selection": {
+              "tagStatus": "untagged",
+              "countType": "sinceImagePushed",
+              "countUnit": "days",
+              "countNumber": 7
+            },
+            "action": {
+              "type": "expire"
+            }
+          }
+        ]
+      }
+    }
+  ]
+}

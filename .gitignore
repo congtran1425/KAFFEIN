@@ -1,0 +1,51 @@
+# Dependencies and build output
+node_modules/
+dist/
+build/
+coverage/
+.vite/
+apps/api/src/generated/
+apps/api/dist/
+apps/web/dist/
+apps/pos/.gradle/
+apps/pos/app/build/
+apps/pos/build/
+apps/pos/.kotlin/
+apps/pos/app/release/
+*.apk
+*.aab
+.gradle/
+.idea/
+.vscode/
+*.iml
+.DS_Store
+Thumbs.db
+/momo/
+cdk.out/
+*.log
+npm-debug.log*
+
+# Local artifacts and workstation state
+/recovery/
+/.artifacts/
+/.hallmark/
+
+# Credentials and local data
+.env
+.env.*
+!.env.example
+*.db
+*.db-shm
+*.db-wal
+apps/pos/local.properties
+*.dump
+*.bak
+*.pem
+*.key
+*.jks
+*.keystore
+/.aws/
+/.ssh/
+
+# Reviewed test evidence included with the report
+!thesis/assets/evidence/results-20261023/*.log

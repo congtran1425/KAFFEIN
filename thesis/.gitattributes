@@ -1,0 +1,2 @@
+# Preserve PDF bytes and avoid text conversion when reviewing generated reports.
+*.pdf binary

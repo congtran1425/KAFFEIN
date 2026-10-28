@@ -1,0 +1,81 @@
+name: AWS release
+
+on:
+  push:
+    branches: [desktop-work]
+    paths:
+      - 'apps/**'
+      - 'infra/**'
+      - 'scripts/aws-release*'
+      - 'scripts/smoke-deployment.mjs'
+      - 'scripts/test-*'
+      - 'scripts/project-environment.mjs'
+      - '.github/workflows/**'
+      - '.dockerignore'
+      - 'package*.json'
+      - '!**/*.md'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: kaffein-aws-production
+  cancel-in-progress: false
+
+jobs:
+  quality:
+    uses: ./.github/workflows/ci.yml
+
+  deploy:
+    needs: quality
+    if: github.ref == 'refs/heads/desktop-work'
+    runs-on: ubuntu-latest
+    timeout-minutes: 55
+    permissions:
+      contents: read
+      id-token: write
+    env:
+      AWS_REGION: ap-southeast-1
+      AWS_ACCOUNT_ID: '634393786371'
+      RELEASE_TAG: git-${{ github.sha }}-${{ github.run_id }}-${{ github.run_attempt }}
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+      - name: Refuse a superseded release commit
+        run: |
+          release_head=$(git ls-remote origin refs/heads/desktop-work | cut -f1)
+          git fetch --no-tags --depth=1 origin "$release_head"
+          # A documentation-only push must not strand an otherwise valid release.
+          git diff --quiet "$GITHUB_SHA" "$release_head" -- apps infra 'scripts/aws-release*' scripts/smoke-deployment.mjs 'scripts/test-*' scripts/project-environment.mjs .github/workflows .dockerignore 'package*.json' ':(exclude,glob)**/*.md'
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm ci
+      - name: Authenticate to AWS using OIDC
+        uses: aws-actions/configure-aws-credentials@7474bc4690e29a8392af63c5b98e7449536d5c3a # v4
+        with:
+          role-to-assume: arn:aws:iam::634393786371:role/kaffein-github-release
+          role-session-name: github-${{ github.run_id }}
+          aws-region: ap-southeast-1
+      - uses: aws-actions/amazon-ecr-login@03f1aad4c6c7ffd436567f42f9384779290529bd # v2
+      - name: Build and push API, tooling and Web
+        env:
+          REGISTRY: 634393786371.dkr.ecr.ap-southeast-1.amazonaws.com
+        run: |
+          docker buildx build --platform linux/amd64 --target tooling -f apps/api/Dockerfile -t "$REGISTRY/kaffein-api:$RELEASE_TAG-tooling" --push .
+          docker buildx build --platform linux/amd64 --target runner -f apps/api/Dockerfile -t "$REGISTRY/kaffein-api:$RELEASE_TAG" --push .
+          docker buildx build --platform linux/amd64 -f apps/web/Dockerfile -t "$REGISTRY/kaffein-web:$RELEASE_TAG" --push .
+      - name: Migrate, roll out and verify AWS
+        run: node scripts/aws-release.mjs release "$RELEASE_TAG"
+      - name: Store release evidence
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: aws-release-${{ github.run_id }}-${{ github.run_attempt }}
+          path: recovery/private/artifacts/aws-release/*.json
+          if-no-files-found: ignore
+          retention-days: 14
+      - name: Logout ECR
+        if: always()
+        run: docker logout 634393786371.dkr.ecr.ap-southeast-1.amazonaws.com

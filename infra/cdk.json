@@ -1,0 +1,33 @@
+{
+  "app": "npx ts-node --prefer-ts-exts bin/kaffein-infra.ts",
+  "watch": {
+    "include": [
+      "**"
+    ],
+    "exclude": [
+      "README.md",
+      "cdk*.json",
+      "**/*.d.ts",
+      "**/*.js",
+      "tsconfig.json",
+      "package*.json",
+      "node_modules"
+    ]
+  },
+  "context": {
+    "alertEmail": "chidecongchoigenshin@gmail.com",
+    "apiDomain": "api-aws.congtc145.id.vn",
+    "webDomain": "admin-aws.congtc145.id.vn",
+    "imageTag": "20261022-r2",
+    "desiredCount": 1,
+    "enableWeb": true,
+    "webImageTag": "20261023-web-r1",
+    "apiCertArn": "arn:aws:acm:ap-southeast-1:634393786371:certificate/de3117c2-ab32-445d-a7d8-118670c2f6a1",
+    "@aws-cdk/aws-lambda:recognizeLayerVersion": true,
+    "@aws-cdk/core:checkSecretUsage": true,
+    "@aws-cdk/core:target-partitions": [
+      "aws"
+    ],
+    "aws-cdk:enableDiffNoFail": "true"
+  }
+}

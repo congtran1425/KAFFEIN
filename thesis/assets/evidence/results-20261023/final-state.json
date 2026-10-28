@@ -1,0 +1,84 @@
+{
+  "at": "2026-10-23T03:24:13.868Z",
+  "stack": "UPDATE_COMPLETE",
+  "tag": "git-0666abfdca37524df0eb539133e3e9c385058c01-39893576810-1",
+  "taskDefinition": "arn:aws:ecs:ap-southeast-1:ACCOUNT_ID:task-definition/KaffeinStackKaffeinApiTaskDefBE417B03:5",
+  "containers": [
+    {
+      "name": "KaffeinWebContainer",
+      "image": "ACCOUNT_ID.dkr.ecr.ap-southeast-1.amazonaws.com/kaffein-web:git-0666abfdca37524df0eb539133e3e9c385058c01-39893576810-1"
+    },
+    {
+      "name": "KaffeinApiContainer",
+      "image": "ACCOUNT_ID.dkr.ecr.ap-southeast-1.amazonaws.com/kaffein-api:git-0666abfdca37524df0eb539133e3e9c385058c01-39893576810-1"
+    }
+  ],
+  "running": 1,
+  "desired": 1,
+  "rollout": "COMPLETED",
+  "targets": [
+    {
+      "arn": "arn:aws:elasticloadbalancing:ap-southeast-1:ACCOUNT_ID:targetgroup/Kaffei-Kaffe-VW3SFFH1Y7BT/632b16d6234bbc4f",
+      "health": [
+        {
+          "Target": {
+            "Id": "PRIVATE_TASK_IP",
+            "Port": 3000,
+            "AvailabilityZone": "ap-southeast-1b"
+          },
+          "HealthCheckPort": "3000",
+          "TargetHealth": {
+            "State": "healthy"
+          },
+          "AdministrativeOverride": {
+            "State": "no_override",
+            "Reason": "AdministrativeOverride.NoOverride",
+            "Description": "No override is currently active on target"
+          }
+        }
+      ]
+    },
+    {
+      "arn": "arn:aws:elasticloadbalancing:ap-southeast-1:ACCOUNT_ID:targetgroup/Kaffei-Kaffe-CL3KBQWSW0JM/a095f7048b52c523",
+      "health": [
+        {
+          "Target": {
+            "Id": "PRIVATE_TASK_IP",
+            "Port": 8080,
+            "AvailabilityZone": "ap-southeast-1b"
+          },
+          "HealthCheckPort": "8080",
+          "TargetHealth": {
+            "State": "healthy"
+          },
+          "AdministrativeOverride": {
+            "State": "no_override",
+            "Reason": "AdministrativeOverride.NoOverride",
+            "Description": "No override is currently active on target"
+          }
+        }
+      ]
+    }
+  ],
+  "credentialAndEnrollmentDigestsUnchanged": true,
+  "identitiesPreserved": true,
+  "beforeCounts": {
+    "sales": "0",
+    "attendances": "0",
+    "payments": "0",
+    "cashier_sessions": "1",
+    "stock_movements": "0",
+    "devices": "1"
+  },
+  "afterCounts": {
+    "sales": "0",
+    "attendances": "0",
+    "payments": "0",
+    "cashier_sessions": "2",
+    "stock_movements": "0",
+    "devices": "1"
+  },
+  "migrations": 15,
+  "auditCount": 4,
+  "employeeChanges": 3
+}

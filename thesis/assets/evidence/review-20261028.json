@@ -1,0 +1,254 @@
+{
+  "formatVersion": 1,
+  "kind": "historical-evidence-review",
+  "reviewedOn": "2026-10-28",
+  "timezone": "Asia/Ho_Chi_Minh",
+  "reviewHead": "d23da7a9fab57ef39539f594568a65e77949e5d6",
+  "reviewMethod": "Read existing local logs, release metadata and test source at the release commit; calculate SHA-256 of source files.",
+  "newBusinessTestsRun": false,
+  "liveCloudOrDatabaseQueried": false,
+  "release": {
+    "occurredOn": "2026-10-23",
+    "observedAtUtc": "2026-10-23T03:24:13.868Z",
+    "commit": "0666abfdca37524df0eb539133e3e9c385058c01",
+    "githubRunId": "39893576810",
+    "githubRunUrl": "https://github.com/congtran1425/Final-Project/actions/runs/39893576810",
+    "imageTag": "git-0666abfdca37524df0eb539133e3e9c385058c01-39893576810-1",
+    "taskRevision": 5,
+    "desiredTasks": 1,
+    "runningTasks": 1,
+    "rolloutState": "COMPLETED",
+    "cloudFormationState": "UPDATE_COMPLETE",
+    "apiTargetState": "healthy",
+    "webTargetState": "healthy",
+    "appliedMigrations": 15,
+    "sources": [
+      "release-state",
+      "deployment-state",
+      "github-jobs"
+    ],
+    "jobs": [
+      {
+        "name": "quality / api",
+        "status": "completed",
+        "conclusion": "success"
+      },
+      {
+        "name": "quality / web-infra",
+        "status": "completed",
+        "conclusion": "success"
+      },
+      {
+        "name": "quality / pos",
+        "status": "completed",
+        "conclusion": "success"
+      },
+      {
+        "name": "deploy",
+        "status": "completed",
+        "conclusion": "success"
+      }
+    ]
+  },
+  "tests": {
+    "apiUnit": {
+      "source": "api-unit",
+      "suitesPassed": 20,
+      "suitesTotal": 20,
+      "passed": 164,
+      "total": 164
+    },
+    "apiIntegration": {
+      "source": "api-integration",
+      "suitesPassed": 7,
+      "suitesTotal": 7,
+      "passed": 63,
+      "skipped": 2,
+      "total": 65,
+      "skipIdentificationBasis": "The log reports the aggregate. The two conditional skips were identified in test source at release commit 0666abfdca37524df0eb539133e3e9c385058c01.",
+      "skippedCases": [
+        {
+          "name": "live sandbox creates a QR and queries it without callback or paying",
+          "category": "MoMo live Sandbox create/query",
+          "sourceAtCommit": "apps/api/test/momo-polling.e2e-spec.ts",
+          "gitBlobSha1": "bbf4a1c9afd6a05580df037dd5de5ff662be72e0",
+          "optInEnvironmentVariable": "POS_MOMO_LIVE_SANDBOX",
+          "scopeLimit": "The case does not pay using a wallet, even when enabled."
+        },
+        {
+          "name": "real Android Room reconciles catalog, receiving and offline cash with this API",
+          "category": "Connected Android Room business rehearsal",
+          "sourceAtCommit": "apps/api/test/catalog-receiving-rehearsal.e2e-spec.ts",
+          "gitBlobSha1": "d1024c86ba744eb2d0a40761fc37016ad1b8d2d2",
+          "optInEnvironmentVariable": "POS_ANDROID_REHEARSAL_SERIAL"
+        }
+      ]
+    },
+    "web": {
+      "source": "web-tests",
+      "passed": 11,
+      "failed": 0,
+      "skipped": 0,
+      "total": 11
+    },
+    "android": {
+      "source": "pos-build",
+      "tasksObserved": [
+        ":app:testDebugUnitTest",
+        ":app:assembleDebug"
+      ],
+      "result": "BUILD SUCCESSFUL",
+      "jvmTestTaskExecuted": true,
+      "instrumentationExecutionProvenByThisLog": false,
+      "exactJvmTestCount": null,
+      "scopeLimit": "This log does not print the total number of JVM tests; XML reports are absent from the current build directory. The historical count of 54 is not independently established by this artifact."
+    },
+    "commitLinkageLimit": "The release metadata identifies the deployed commit and CI run. The local API/Web/Android logs are preserved verification artifacts but do not themselves embed a Git commit. They must not be represented as newly executed tests at the review HEAD."
+  },
+  "publicVerification": {
+    "source": "public-verification",
+    "observedAtUtc": "2026-10-23T03:20:53.177Z",
+    "ownerVisibleEmployeeRows": 4,
+    "managerVisibleEmployeeRows": 2,
+    "employeeCodeSearch": true,
+    "foreignStoreForbidden": true,
+    "ownerPageErrors": 0,
+    "managerPageErrors": 0,
+    "scopeLimit": "These observations cover the recorded employee-list and scope checks, not all endpoints."
+  },
+  "healthSampling": {
+    "source": "rollout-health",
+    "relatesToEarlierGithubRunId": "39888131251",
+    "firstSampleAtUtc": "2026-10-23T02:19:16.705Z",
+    "lastSampleAtUtc": "2026-10-23T02:25:54.207Z",
+    "samples": 72,
+    "http200AndDatabaseOk": 71,
+    "clientTimeouts": 1,
+    "timeoutAtUtc": "2026-10-23T02:25:17.086Z",
+    "scopeLimit": "This is an earlier release observation window. It does not measure sale latency, establish an SLA or prove uninterrupted service."
+  },
+  "remainingEvidenceGaps": [
+    "An end-to-end acceptance run on the target AWS APK for offline cash, restart and later synchronization.",
+    "An acceptance artifact showing the same operation sent at least ten times with database checks for AC-03.",
+    "A real wallet payment in Sandbox with provider identifiers and reconciliation evidence.",
+    "A complete cash-count, compensation and handover acceptance run on the target AWS APK.",
+    "A verified backup restore and empirical performance, cost and user-study data."
+  ],
+  "privacy": "Published evidence contains test logs, deployment facts and aggregated scope-check results. Credential/PIN/enrollment digests, individual employee records, AWS account identifiers, private task IPs and workstation paths have been removed from affected copies. originalSha256 identifies the untouched original; sha256 and bytes identify each included copy.",
+  "pathBase": "Source paths are relative to this JSON file and point to files included in the submission.",
+  "sources": [
+    {
+      "id": "api-unit",
+      "path": "results-20261023/api-unit.log",
+      "sha256": "cbfea3b0271efe3cce7dec2ac9fa0497c3dbf779cf751d897ccccd70175c41a0",
+      "bytes": 2528,
+      "originalSha256": "cbfea3b0271efe3cce7dec2ac9fa0497c3dbf779cf751d897ccccd70175c41a0",
+      "originalBytes": 2528,
+      "redacted": false,
+      "encoding": "UTF-16LE with BOM"
+    },
+    {
+      "id": "api-integration",
+      "path": "results-20261023/api-integration.log",
+      "sha256": "39451b683f94aa6c82ee9edaab03980037b6fdcecf54050833cbe116e66dd42e",
+      "bytes": 7748,
+      "originalSha256": "39451b683f94aa6c82ee9edaab03980037b6fdcecf54050833cbe116e66dd42e",
+      "originalBytes": 7748,
+      "redacted": false,
+      "encoding": "UTF-16LE with BOM"
+    },
+    {
+      "id": "web-tests",
+      "path": "results-20261023/web-test.log",
+      "sha256": "7b76127167e4ab8f80f6c9607e3cb6e5cfcb23c2a83405b0e78daf7ad086bbb0",
+      "bytes": 2014,
+      "originalSha256": "7b76127167e4ab8f80f6c9607e3cb6e5cfcb23c2a83405b0e78daf7ad086bbb0",
+      "originalBytes": 2014,
+      "redacted": false,
+      "encoding": "UTF-16LE with BOM"
+    },
+    {
+      "id": "github-jobs",
+      "path": "results-20261023/github-jobs.json",
+      "sha256": "6df01770150fb092e107e6a8b26c4c749c5ddc8e07755f57c0059c91f6fd78be",
+      "bytes": 538,
+      "originalSha256": "6df01770150fb092e107e6a8b26c4c749c5ddc8e07755f57c0059c91f6fd78be",
+      "originalBytes": 538,
+      "redacted": false,
+      "encoding": "UTF-8"
+    },
+    {
+      "id": "release-state",
+      "path": "results-20261023/final-state.json",
+      "sha256": "ff0e207fca1f068a3fb612b674f88d557006fbc7f59d9ed46a131b8e16e6822e",
+      "bytes": 2516,
+      "originalSha256": "5b0b79047eee1d175ef77ab5aec57643c2c814c505416ffbc51e1ad9b8dfe63b",
+      "originalBytes": 2877,
+      "redacted": true,
+      "encoding": "UTF-8",
+      "redactionSummary": [
+        "AWS account identifiers and private task IP replaced by labels",
+        "Credential, PIN and enrollment digest values omitted; unchanged-digest result retained"
+      ]
+    },
+    {
+      "id": "public-verification",
+      "path": "results-20261023/public-verification.json",
+      "sha256": "198b88dc6c693afd0564309d19c83cd0d3bdea2b81fc90e09ef3f7b61776f7dd",
+      "bytes": 300,
+      "originalSha256": "67ba6d48cedfc8b756ee6b06721ef0088f7092b8ecefb100f471a759a3671bdd",
+      "originalBytes": 1758,
+      "redacted": true,
+      "encoding": "UTF-8",
+      "redactionSummary": [
+        "Individual employee records, employee codes and user IDs omitted; role-level row counts and scope checks retained"
+      ]
+    },
+    {
+      "id": "pos-build",
+      "path": "results-20261023/cicd-pos-build.log",
+      "sha256": "380becfcbc99d98a9669f46b6e6c88f2b783cbe28ff6dbc9da98def71311e5cb",
+      "bytes": 5511,
+      "originalSha256": "6ed0047ff39d92716105e0342d333fd106f9caec3817c7e794cdbb3579c13277",
+      "originalBytes": 11168,
+      "redacted": true,
+      "encoding": "UTF-8",
+      "redactionSummary": [
+        "Absolute project path and workstation username replaced by labels; UTF-16LE converted to UTF-8"
+      ]
+    },
+    {
+      "id": "rollout-health",
+      "path": "results-20261023/final-rollout-health.json",
+      "sha256": "2eb6e2449a12e1004ab668249ae636b03628d4e7634660a955c28b5e9818953c",
+      "bytes": 6282,
+      "originalSha256": "2eb6e2449a12e1004ab668249ae636b03628d4e7634660a955c28b5e9818953c",
+      "originalBytes": 6282,
+      "redacted": false,
+      "encoding": "UTF-8"
+    },
+    {
+      "id": "deployment-state",
+      "path": "results-20261023/deployment-final-state.json",
+      "sha256": "a38917d2ef6051b5bd1f0de099b3637dad9011003e6b76c42971319651c6238e",
+      "bytes": 3831,
+      "originalSha256": "4787076c68e4a31bc341420085015e2203aad90675cb8d0760cb7edb2173ce78",
+      "originalBytes": 3830,
+      "redacted": true,
+      "encoding": "UTF-8",
+      "redactionSummary": [
+        "AWS account identifiers and private task IP replaced by labels"
+      ]
+    }
+  ],
+  "publicEvidence": {
+    "preparedOn": "2026-10-28",
+    "sourceDirectory": "results-20261023/",
+    "originalsModified": false,
+    "originalByteCopies": 5,
+    "redactedCopies": 4,
+    "dependencyOnPrivateRecovery": false,
+    "newTestsRun": false,
+    "liveAwsQueried": false
+  }
+}

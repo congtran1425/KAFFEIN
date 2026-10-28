@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <style name="Theme.CoffeePos" parent="android:Theme.Material.Light.NoActionBar">
+        <item name="android:windowFullscreen">true</item>
+        <item name="android:windowContentOverlay">@null</item>
+        <item name="android:dialogTheme">@style/Theme.CoffeePos.Dialog</item>
+        <item name="android:alertDialogTheme">@style/Theme.CoffeePos.Dialog</item>
+    </style>
+
+    <style name="Theme.CoffeePos.Dialog" parent="android:Theme.Material.Light.Dialog">
+        <item name="android:windowFullscreen">true</item>
+        <item name="android:windowDrawsSystemBarBackgrounds">true</item>
+    </style>
+
+    <style name="DialogWindowTheme">
+        <item name="android:windowFullscreen">true</item>
+        <item name="android:windowDrawsSystemBarBackgrounds">true</item>
+    </style>
+</resources>
