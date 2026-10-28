@@ -6,13 +6,21 @@ POS đọc dữ liệu từ Room, lưu thao tác vào outbox và đồng bộ v�
 
 ## Video Demo Hệ thống
 
-Video quay lại kịch bản vận hành thực tế của hệ thống KAFFEIN (thời lượng ~22 phút):
-- **Web Admin:** Quản lý danh mục thực đơn, nguyên vật liệu kho, nhân sự, ca làm và báo cáo số liệu toàn chuỗi.
-- **Android POS:** Quy trình bán hàng tại quầy (mở ca/phiên quỹ, tạo order, thanh toán tiền mặt offline, thanh toán trực tuyến qua mã QR MoMo/ZaloPay Sandbox và kết ca quỹ).
-- **Khả năng chịu lỗi & đồng bộ:** Đồng bộ ngoại tuyến (Room Outbox) và kiểm thử khả năng tự phục hồi khi có kết nối trở lại.
+<p align="center">
+  <a href="https://drive.google.com/drive/folders/1wdwwHIi8vouFsOt2kym_0qYmnL6fI6R4?usp=drive_link" target="_blank">
+    <img src="thesis/assets/kaffein-demo-preview.gif" alt="KAFFEIN System Demo Preview" width="720px" />
+  </a>
+  <br>
+  <em>(Hình xem trước trích từ video demo — nhấp vào ảnh để xem bản đầy đủ trên Google Drive)</em>
+</p>
 
-> - **Tập tin video nội bộ:** [kaffein-system-demo.mp4](thesis/kaffein-system-demo.mp4) *(thời lượng `22:24`, MP4)*
-> - **Thư mục tư liệu & video trực tuyến:** [Google Drive](https://drive.google.com/drive/folders/1wdwwHIi8vouFsOt2kym_0qYmnL6fI6R4?usp=drive_link)
+Video quay lại toàn bộ kịch bản vận hành thực tế của hệ thống KAFFEIN (thời lượng **22:24**):
+- **Web Admin:** Quản trị chuỗi, danh mục thực đơn, nguyên vật liệu kho, quản lý nhân sự & phân quyền, báo cáo số liệu toàn chuỗi.
+- **Android POS:** Quy trình bán hàng tại quầy (mở ca/phiên quỹ, tạo order món, thanh toán tiền mặt offline, thanh toán trực tuyến qua mã QR MoMo/ZaloPay Sandbox và kết ca quỹ).
+- **Khả năng chịu lỗi & đồng bộ:** Bán hàng ngoại tuyến khi mất mạng (Room Outbox) và tự động đồng bộ khi có kết nối trở lại.
+
+> - **Xem video trực tuyến (22:24):** [Google Drive Folder](https://drive.google.com/drive/folders/1wdwwHIi8vouFsOt2kym_0qYmnL6fI6R4?usp=drive_link)
+> - **Tệp video nội bộ:** [`thesis/kaffein-system-demo.mp4`](thesis/kaffein-system-demo.mp4) (Gốc ~1.4 GB) &bull; [`thesis/kaffein-system-demo-compressed.mp4`](thesis/kaffein-system-demo-compressed.mp4) (Bản nén 46 MB)
 
 ## Thành phần
 
